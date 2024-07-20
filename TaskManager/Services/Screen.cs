@@ -9,6 +9,7 @@ namespace TaskManager.Services
 {
     static class Screen
     {
+        // função auxiliar para encontrar a tarefa de maior nome
         private static int FindBiggestTask(List<Tarefa> tarefas)
         {
             int biggestTaskLength = 0;
@@ -22,6 +23,7 @@ namespace TaskManager.Services
             return biggestTaskLength;
         }
 
+        // função auxiliar para saber qual a largura necessária do layout
         private static int RequiredWidth(List<Tarefa> tarefas)
         {
             int biggestTask = FindBiggestTask(tarefas);
@@ -39,54 +41,53 @@ namespace TaskManager.Services
             }
         }
 
-        private static void PrintDivisionLine(int width)
+        //função auxiliar para imprimir linhas no layout
+        private static void PrintDivisionLine(int width, int type)
         {
-            Console.Write("+");
-            for (int i = 1; i <= width - 2; i++)
+            if (type == 1)
             {
-                Console.Write("-");
+                Console.Write("+");
+                for (int i = 1; i <= width - 2; i++)
+                {
+                    Console.Write("-");
+                }
+                Console.WriteLine("+");
             }
-            Console.WriteLine("+");
+            else if (type == 2)
+            {
+                Console.Write("+-+-+");
+                for (int i = 1; i <= width - 6; i++)
+                {
+                    Console.Write("-");
+                }
+                Console.WriteLine("+");
+            }
+
         }
 
+        // função auxiliar para imprimir o cabeçario
         private static void PrintHeader(int width)
         {
-            PrintDivisionLine(width);
+            PrintDivisionLine(width, 1);
             Console.Write("|  TASK MANAGER");
             for (int i = 1; i < width - 15; i++)
             {
                 Console.Write(" ");
             }
             Console.WriteLine("|");
-            Console.Write("+-+-");
-            PrintDivisionLine(width - 4);
+            PrintDivisionLine(width, 2);
         }
 
+        // função para reduzir o tamanho do nome caso ultrapasse o máximo
         private static string ToShorterName(string name)
         {
-            if (name.Length <= 31)
-            {
-                int emptyspace = 34 - name.Length;
-                string aux = "";
-                for (int i = 1; i <=  emptyspace; i++)
-                {
-                    aux = aux + " ";
-                }
-                return name + aux;
-            }
-            else if(name.Length <= 51)
-            {
-                return name + "   ";
-            }
-            else
-            {
-                return name.Substring(0, 51) + "...";
-            }
-
+            return name.Substring(0, 51) + "...";
         }
 
+        //função auxiliar para imprimir as linhas de tarefas
         private static void PrintTaskLines(List<Tarefa> tarefas)
         {
+            bool haveABiggerNumber = false;
             foreach (Tarefa t in tarefas)
             {
                 Console.Write("|");
@@ -103,21 +104,80 @@ namespace TaskManager.Services
                     Console.ResetColor();
                 }
                 Console.Write("|");
-                int position = 1;
-                Console.Write(position + "|");
-                position++;
-                Console.WriteLine(ToShorterName(t.Name) + "|");
+                Console.Write((tarefas.IndexOf(t) + 1) + "|");
+
+                string name = t.Name;
+                int biggerTask = FindBiggestTask(tarefas);
+
+                if(name.Length < biggerTask) { haveABiggerNumber = true; }
+                else { haveABiggerNumber = false;}
+                
+
+
+
+                if (!haveABiggerNumber)
+                {
+                    if (name.Length <= 31)
+                    {
+                        Console.Write(name);
+                        int diference = 34 - name.Length;
+                        for (int i = 1; i <= diference; i++)
+                        {
+                            Console.Write(" ");
+                        }
+                    }
+                    else if (name.Length <= 51)
+                    {
+                        Console.Write(name + "   ");
+                    }
+                    else
+                    {
+                        Console.Write(ToShorterName(name));
+                    }
+                }else if(biggerTask <= 31)
+                {
+                    int diference = 34 - name.Length;
+                    Console.Write(name);
+                    for (int i = 1; i <= diference; i++)
+                    {
+                        Console.Write(" ");
+                    }
+                }
+                else if (biggerTask <= 51)
+                {
+                    int diference = biggerTask + 3 - name.Length;
+
+                    Console.Write(name);
+                    for (int i = 1; i <= diference; i++)
+                    {
+                        Console.Write(" ");
+                    }
+                } else
+                {
+                    //tem um número maior e ele é do tamanho máximo
+                    int diference = 54 - name.Length;
+                    Console.Write(name);
+                    for (int i = 1; i <= diference; i++)
+                    {
+                        Console.Write(" ");
+                    }
+                }
+
+                Console.WriteLine("|");
             }
         }
 
+        //função para imprimir a pagina principal
         public static void PrintHomePage(List<Tarefa> tarefas)
         {
+            Console.Clear();
+
             int width = RequiredWidth(tarefas);
             PrintHeader(width);
             PrintTaskLines(tarefas);
-            PrintDivisionLine(width);
+            PrintDivisionLine(width, 2);
             Console.WriteLine();
-            Console.WriteLine("Enter command (if need help, write 'help'): ");
+            Console.WriteLine("Enter command (if need help, write 'Help'): ");
 
         }
     }
