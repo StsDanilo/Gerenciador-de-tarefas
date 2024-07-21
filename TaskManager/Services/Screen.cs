@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskManager.Entities;
+﻿using TaskManager.Entities;
 
 namespace TaskManager.Services
 {
@@ -47,19 +42,13 @@ namespace TaskManager.Services
             if (type == 1)
             {
                 Console.Write("+");
-                for (int i = 1; i <= width - 2; i++)
-                {
-                    Console.Write("-");
-                }
+                PrintRepeatedCharacters(width - 2, '-');
                 Console.WriteLine("+");
             }
             else if (type == 2)
             {
                 Console.Write("+-+-+");
-                for (int i = 1; i <= width - 6; i++)
-                {
-                    Console.Write("-");
-                }
+                PrintRepeatedCharacters(width - 6, '-');
                 Console.WriteLine("+");
             }
 
@@ -70,10 +59,7 @@ namespace TaskManager.Services
         {
             PrintDivisionLine(width, 1);
             Console.Write("|  TASK MANAGER");
-            for (int i = 1; i < width - 15; i++)
-            {
-                Console.Write(" ");
-            }
+            PrintRepeatedCharacters(width - 16, ' ');
             Console.WriteLine("|");
             PrintDivisionLine(width, 2);
         }
@@ -82,6 +68,15 @@ namespace TaskManager.Services
         private static string ToShorterName(string name)
         {
             return name.Substring(0, 51) + "...";
+        }
+
+        // função auxiliar para imprimir espaços vazios até o fim da linha
+        private static void PrintRepeatedCharacters(int repetition, char c)
+        {
+            for (int i = 1; i <= repetition; i++)
+            {
+                Console.Write(c);
+            }
         }
 
         //função auxiliar para imprimir as linhas de tarefas
@@ -109,9 +104,15 @@ namespace TaskManager.Services
                 string name = t.Name;
                 int biggerTask = FindBiggestTask(tarefas);
 
-                if(name.Length < biggerTask) { haveABiggerNumber = true; }
-                else { haveABiggerNumber = false;}
-                
+                if (name.Length < biggerTask)
+                {
+                    haveABiggerNumber = true;
+                }
+                else
+                {
+                    haveABiggerNumber = false;
+                }
+
 
 
 
@@ -119,48 +120,42 @@ namespace TaskManager.Services
                 {
                     if (name.Length <= 31)
                     {
+                        // é o maior número e é menor que o tamanho mínimo
                         Console.Write(name);
                         int diference = 34 - name.Length;
-                        for (int i = 1; i <= diference; i++)
-                        {
-                            Console.Write(" ");
-                        }
+                        PrintRepeatedCharacters(diference, ' ');
                     }
                     else if (name.Length <= 51)
                     {
+                        //é o maior número e está entre o tamanho máximo e mínimo
                         Console.Write(name + "   ");
                     }
                     else
                     {
+                        //é o maior número e é maior que o tamanho máximo
                         Console.Write(ToShorterName(name));
                     }
-                }else if(biggerTask <= 31)
+                }
+                else if (biggerTask <= 31)
                 {
-                    int diference = 34 - name.Length;
+                    //não é o maior número e o maior número é menor que o tamanho mínimo
                     Console.Write(name);
-                    for (int i = 1; i <= diference; i++)
-                    {
-                        Console.Write(" ");
-                    }
+                    int diference = 34 - name.Length;
+                    PrintRepeatedCharacters(diference, ' '); 
                 }
                 else if (biggerTask <= 51)
                 {
+                    //não é o maior número e o maior número está entre o tamanho mínimo e o máximo
+                    Console.Write(name);
                     int diference = biggerTask + 3 - name.Length;
-
-                    Console.Write(name);
-                    for (int i = 1; i <= diference; i++)
-                    {
-                        Console.Write(" ");
-                    }
-                } else
+                    PrintRepeatedCharacters(diference, ' ');
+                }
+                else
                 {
-                    //tem um número maior e ele é do tamanho máximo
-                    int diference = 54 - name.Length;
+                    //tem um número maior e ele é do tamanho 
                     Console.Write(name);
-                    for (int i = 1; i <= diference; i++)
-                    {
-                        Console.Write(" ");
-                    }
+                    int diference = 54 - name.Length;
+                    PrintRepeatedCharacters(diference, ' ');
                 }
 
                 Console.WriteLine("|");
