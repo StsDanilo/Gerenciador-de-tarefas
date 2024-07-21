@@ -28,6 +28,9 @@ namespace TaskManager.Services
                 case CommandEnum.End:
                     End();
                     break;
+                case CommandEnum.Expand:
+                    Expand(command, tarefas);
+                    break;
                 default:
                 break;
 
@@ -72,6 +75,13 @@ namespace TaskManager.Services
         private static void End()
         {
             ProgramExecution.IsRunning = false;
+        }
+
+        private static void Expand(Command command, List<Tarefa> tarefas)
+        {
+            Tarefa task = tarefas[int.Parse(command.Parameter) - 1];
+            Screen.PrintExtendedTask(task, tarefas);
+            Console.ReadLine();
         }
     }
 }

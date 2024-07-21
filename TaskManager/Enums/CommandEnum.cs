@@ -8,7 +8,8 @@ namespace TaskManager.Enums
         Delete,
         Help,
         Status,
-        End
+        End,
+        Expand
 
     }
 }

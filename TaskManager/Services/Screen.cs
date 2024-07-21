@@ -1,4 +1,5 @@
-﻿using TaskManager.Entities;
+﻿using System.Runtime.InteropServices;
+using TaskManager.Entities;
 
 namespace TaskManager.Services
 {
@@ -49,6 +50,14 @@ namespace TaskManager.Services
             {
                 Console.Write("+-+-+");
                 PrintRepeatedCharacters(width - 6, '-');
+                Console.WriteLine("+");
+            }
+            else if (type == 3)
+            {
+                Console.Write("+");
+                PrintRepeatedCharacters((width - 3) / 2, '-');
+                Console.Write("+");
+                PrintRepeatedCharacters((width - 3) / 2, '-');
                 Console.WriteLine("+");
             }
 
@@ -141,7 +150,7 @@ namespace TaskManager.Services
                     //não é o maior número e o maior número é menor que o tamanho mínimo
                     Console.Write(name);
                     int diference = 34 - name.Length;
-                    PrintRepeatedCharacters(diference, ' '); 
+                    PrintRepeatedCharacters(diference, ' ');
                 }
                 else if (biggerTask <= 51)
                 {
@@ -174,6 +183,69 @@ namespace TaskManager.Services
             Console.WriteLine();
             Console.WriteLine("Enter command (if need help, write 'Help'): ");
 
+        }
+
+        private static void PrintStatusLine(Tarefa tarefa, List<Tarefa> tarefas)
+        {
+            Console.Write("|");
+            if (tarefa.IsDone)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("Completed");
+                Console.ResetColor();
+                Console.Write("       |");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Pending");
+                Console.ResetColor();
+                Console.Write("         |");
+            }       
+            Console.WriteLine((tarefas.IndexOf(tarefa) + 1) + "               |");
+        }
+
+        private static void PrintExpansionHeader(Tarefa tarefa, List<Tarefa> tarefas)
+        {
+            PrintDivisionLine(35, 3);
+            Console.WriteLine("|Status          | Position       |");
+            PrintDivisionLine(35, 3);
+            PrintStatusLine(tarefa, tarefas);
+            PrintDivisionLine(35, 3);
+        }
+
+        public static void PrintExtendedTask(Tarefa tarefa, List<Tarefa> tarefas)
+        {
+            Console.Clear();
+            PrintExpansionHeader(tarefa, tarefas);
+            
+            //levar o lixo para fora de casa agora 36
+            int Length = tarefa.Name.Length;
+            int lines = (int)Math.Ceiling((double)Length / 30);
+            int lastPosition = 0;
+            for (int i = 0; i < lines - 1; i++)
+            {
+                Console.Write("|");
+                Console.WriteLine(tarefa.Name.Substring(lastPosition,lastPosition + 30) + "   |");
+                lastPosition += 30;
+
+            }
+            if (lines > 1)
+            {
+                string rest = tarefa.Name.Substring(30 * (lines - 1));
+                int diference = 33 - rest.Length;
+                Console.Write("|" + rest);
+                PrintRepeatedCharacters(diference, ' ');
+                Console.WriteLine("|");
+
+            } else
+            {
+                int diference = 33 - tarefa.Name.Length;
+                Console.Write("|" + tarefa.Name);
+                PrintRepeatedCharacters(diference, ' ');
+                Console.WriteLine("|");
+            }
+            PrintDivisionLine(35, 1);
         }
     }
 }
